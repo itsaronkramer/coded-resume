@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aron Kramer's Code CV</title>
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/cascadia-code');
+        
+        html {
+            font-size: clamp(8px, 1dvw, 12px);
+            scrollbar-width: none;
+        }
+        
+        body {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Cascadia Code';
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: clip;
+            overflow-y: auto;
+        }
+
+        p, li {
+            font-family: 'Cascadia Code';
+            font-size: clamp(12px, 1dvw, 12px);
+        }
+
+        p > strong {
+            font-size: clamp(14px, 1dvw, 14px);
+            font-weight: 400;
+        }
+
+        h1 {
+            font-weight: 400;
+            color: whitesmoke;
+        }
+
+        dialog[open] {
+            width: calc(80dvw);
+            height: 80dvh;
+            display: block;
+            position: absolute;
+            inset: 0;
+            transition: 0.25s ease;
+            background-color: #131212;
+            color: whitesmoke;
+            border: none;
+        }
+
+        dialog::backdrop {
+        backdrop-filter: brightness(0.1);
+        opacity: 0.75;
+        }
+
+        dialog {
+            overflow-y: scroll;
+            overflow-x: clip;
+            outline: 1px solid whitesmoke;
+            border-radius: 2px;
+            scrollbar-width: none;
+        }
+
+        @starting-style {
+            dialog[open] {
+                opacity: 0;
+                transform: scaleY(1) translateY(-5dvh);
+                transition: 0.25s ease;
+            }
+        }
+
+        .typewriter {
+            white-space: pre; 
+            overflow: hidden; /* Hide the overflowing text */
+            border-right: 2px solid #d4d4d4; /* Cursor effect */
+            font-size: 1.2em;
+            margin: 0;
+            animation: typing 2s steps(30, end), blink-caret 0.75s step-end infinite;
+            line-height: normal;
+            max-inline-size: 90dvw;
+            font-family: 'Cascadia Code';
+            font-style: normal;
+        }
+
+        #open-modal-button, #close-modal-button, #crt-toggle {
+            font-family: 'Cascadia Code';
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            text-align: end;
+            color: whitesmoke;
+            top: 1dvw;
+            right: 1dvw;
+            animation: 1s fade-in ease;
+            opacity: 0;
+            pointer-events: none;
+            animation-delay: 2s;
+            animation-fill-mode: forwards;
+            border: 1px solid white;
+            padding: 1dvw;
+            border-radius: 2px;
+        }
+
+        #close-modal-button {
+            box-shadow: unset;
+            animation: unset;
+            opacity: 1;
+            top: 2dvw;
+            right: 2dvw;
+            font-size: small;
+            pointer-events: all !important;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(5dvh); }
+            to { opacity: 0.7; transform: translateY(0dvh); pointer-events:all; }
+        }
+
+        #open-modal-button:hover, #crt-toggle:hover, #close-modal-button:hover {
+            opacity: 1;
+            box-sizing: border-box;
+            border-color: orange;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .typewriter {
+                text-wrap: pretty;
+            }
+
+            .about-text {
+                white-space: wrap;
+                white-space-collapse: collapse;
+                display: inline-flex;
+            }
+            .mobile-readability-spacer {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #d4d4d4;}
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #d69d85; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; }
+        .number { color: #b5cea8; }
+        .property { color: #9cdcfe; }
+
+        .ascii-container  {
+            display: block;
+            text-align: center;
+            white-space: preserve;
+            margin-bottom: 5dvh;
+            margin-top: 5dvh;
+        }
+
+        .ascii-container .ascii-logo {
+            transition: color 1s ease;
+            display: block;
+        }
+
+        .crt {
+            text-shadow: 0 0 1px rgba(0, 255, 0, 0.8), 0 0 2px rgba(0, 255, 0, 0.6), 0 0 3px rgba(0, 255, 0, 0.4);
+        }
+
+        .crt::before {
+            content: '';
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.05),
+                rgba(255, 255, 255, 0.05) 1px,
+                rgba(0, 0, 0, 0.05) 1px,
+                rgba(145, 40, 40, 0.05) 3px
+            );
+            z-index: 2;
+            mix-blend-mode:color-burn; /* Ensures the lines blend with the background content */
+        }
+
+        .crt::after {
+            content: '';
+   
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        div#options-wrapper {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: right;
+            white-space: nowrap;
+            height: fit-content;
+            gap: 10px;
+            padding: 3dvw;
+        }
+
+        #crt-toggle, #open-modal-button {
+            position: static;
+            flex-basis: min-content;
+            height: 100%;
+            width: min-content;
+        }
+
+        body.crt:after {
+            z-index: 5000;
+            content: ' ';
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.9),  /* Dark line */
+                rgba(0, 0, 0, 0.9) 1px,
+                rgba(255, 255, 255, 0.1) 1px,  /* Light line */
+                rgba(255, 255, 255, 0.1) 3px
+            );
+            background-size: 100% 4px; /* Height of 4px creates a compact scanline effect */
+            color: lime;  /* CRT-style text color */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2em;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            filter: blur(1);
+            opacity: 0.2;
+            animation: 2s ease scanlines infinite alternate;
+        }
+
+        @keyframes scanlines {
+            from {transform: scaleY(1)}
+            to {transform: scaleY(1.4)}
+        }
+
+    </style>
+
+</head>
+<body>
+    <dialog>
+        <header>
+            <a autofocus id="close-modal-button">Close</a>
+            <h1>Aron Kramer</h1>
+            <p><span class="keyword">Age</span>: <span class="property">31</span></p>
+            <p><span class="keyword">Birthday</span>: <span class="property">1992-10-07</span></p>
+            <adress>
+                <p class="keyword">Arnhem, Gelderland | hajkramer@gmail.com</p>
+            </adress>
+        </header>
+        <main>
+            <h1 class=>About me</h1>
+            <p class="string">Passionate, dedicated and creative front-end developer who's most happy walking the unbeaten path.
+            I am loyal, honest and thrive in work environments that challenge my creativity.
+            Above all, I love learning, innovating and talking about code!</p>
+            <h1>Education</h1>
+            <p class="keyword"><strong>Harvard University</strong></p>
+            <ul>
+            <li><span class='property'>Professional Program Record in Web Development & Computer Science</span></li>
+            <li><span class='property'>Web development with Python and JavaScript</span></li>
+            <li><span class='property'>CS50 Introduction to Computer Science</span></li>
+            </ul>
+            <p class="keyword"><strong>Archipel</strong></p>
+            <ul>
+                <li><span class='property'>Design patterns in software engineering</span></li>
+            </ul>
+            <h1>Skills</h1>
+            <ul>
+                <li><span class='property'>'JavaScript'</span></li>
+                <li><span class='property'>'React'</span></li>
+                <li><span class='property'>'Redux'</span></li>
+                <li><span class='property'>'jQuery'</span></li>
+                <li><span class='property'>'Lua'</span></li>
+                <li><span class='property'>'Python'</span></li>
+                <li><span class='property'>'C'</span></li>
+                <li><span class='property'>'HTML / CSS / SASS'</span></li>
+                <li><span class='property'>'Git'</span></li>
+                <li><span class='property'>'Webpack'</span></li>
+                <li><span class='property'>'Magento'</span></li>
+                <li><span class='property'>'Core Web Vitals & SEO'</span></li>
+                <li><span class='property'>'A.I. assisted coding'</span></li>
+                <li><span class='property'>'UI/UX'</span></li>
+                <li><span class='property'>'Responsive design'</span></li>
+                <li><span class='property'>'Game development in Godot'</span></li>
+                <li><span class='property'>'Graphic design'</span></li>
+            </ul>
+            <h1>Experience</h1>
+            <p class="keyword"><strong>Modulari</strong></p>
+            <p class="property"> 2024 - present</p>
+            <p  class="string">Front-end developer</p>
+            <hr>
+
+            <p class="keyword"><strong>VGZ</strong></p>
+            <p class="property"> 2020 - 2022</p>
+            <p class='string'>Workforce Analytics</p>
+            <hr>
+            <p class="keyword"><strong>Decemberborn Interactive</strong></p>
+            <p class="property"> 2015 - 2020</p>
+            <p class='string'>Co-owner, composer and game designer</p>
+            <hr>
+        </main>
+    </dialog>
+
+    <div class="ascii-container"></div>
+    <div id="options-wrapper">
+        <a id="crt-toggle">CRT MODE</a>
+        <a id="open-modal-button">Quick Overview</a>
+    </div>
+    <div class="ide-container" id="code-container"></div>
+
+    <script>
+        document.querySelector('#open-modal-button').addEventListener('click', () => document.querySelector('dialog').showModal());
+        document.querySelector('#close-modal-button').addEventListener('click', () => document.querySelector('dialog').close());
+
+        document.querySelector('.ascii-container').innerHTML = 
+            "<span class='ascii-logo'>  ___                    _   __                              </span>" +
+            "<span class='ascii-logo'> / _ \\                  | | / /                              </span>" +
+            "<span class='ascii-logo'>/ /_\\ \\_ __ ___  _ __   | |/ / _ __ __ _ _ __ ___   ___ _ __ </span>" +
+            "<span class='ascii-logo'>|  _  | '__/ _ \\| '_ \\  |    \\| '__/ _' | '_ ' _ \\ / _ \\ '__|</span>" +
+            "<span class='ascii-logo'>| | | | | | (_) | | | | | |\\  \\ | | (_| | | | | | |  __/ |   </span>" +
+            "<span class='ascii-logo'>\\_| |_/_|  \\___/|_| |_| \\_| \\_/_|  \\__,_|_| |_| |_|\\___|_|   </span>" +
+            "<span class='ascii-logo'> </span>"
+        ;
+
+        const codeLines = [
+            "<span class='keyword'>const</span> <span class='property'>aboutMe</span> = <span class='string'>`</span>",
+            "<span class='string about-text'>    Passionate, dedicated and creative front-end developer who's most happy walking the unbeaten path.</span>",
+            "<span class='string about-text mobile-readability-spacer'>    I am loyal, honest and thrive in work environments that challenge my creativity.</span>",
+            "<span class='string about-text'>    Above all, I love learning, innovating and talking about code!</span>",
+            "<span class='string about-text'>`;</span>",
+            " ",
+            "<span class='keyword'>class</span> <span class='function'>Person</span> {",
+            "    <span class='keyword'>static</span> <span class='property'>_instance</span> = <span class='keyword'>null</span>;",
+            "",
+            "    <span class='keyword'>static</span> <span class='function'>theresOnlyOneMe</span>(<span class='property'>name</span>, <span class='property'>birthday</span>, <span class='property'>about</span>, {<span class='property'>education</span>, <span class='property'>experience</span>, <span class='property'>skills</span>, <span class='property'>hobbies</span>}) {",
+            "        <span class='keyword'>if</span> (!<span class='function'>Person</span>._instance) {",
+            "            <span class='function'>Person</span>._instance = <span class='keyword'>new</span> <span class='function'>Person</span>(<span class='property'>name</span>, <span class='property'>birthday</span>, <span class='property'>about</span>, {<span class='property'>education</span>, <span class='property'>experience</span>, <span class='property'>skills</span>, <span class='property'>hobbies</span>});",
+            "        }",
+            "        <span class='keyword'>return</span> <span class='function'>Person</span>._instance;",
+            "    }",
+            " ",
+            "    <span class='function'>constructor</span>( <span class='property'>name</span>, <span class='property'>birthday</span>, <span class='property'>about</span>, {<span class='property'>education</span>, <span class='property'>experience</span>, <span class='property'>skills</span>, <span class='property'>hobbies</span>}) {",
+            "      <span class='keyword'>if</span> (<span class='function'>Person</span>._instance) {",
+            "            <span class='keyword'>throw</span> <span class='keyword'>new</span> <span class='function'>Error</span>(<span class='string'>\"Aron already exists, alien dobbelganger alarm has been fired!\"</span>);",
+            "    }",
+            " ",
+            "      <span class='keyword'>this</span>.<span class='property'>name</span> = <span class='property'>name</span>;",
+            "      <span class='keyword'>this</span>.<span class='property'>birthday</span> = <span class='keyword'>new</span> <span class='function'>Date</span>(<span class='property'>birthday</span>);",
+            "      <span class='keyword'>this</span>.<span class='property'>about</span> = <span class='property'>about</span>;",
+            "      <span class='keyword'>this</span>.<span class='property'>education</span> = <span class='property'>education</span>;",
+            "      <span class='keyword'>this</span>.<span class='property'>experience</span> = <span class='property'>experience</span>;",
+            "    };",
+            " ",
+            "    <span class='function'>processDates</span>(<span class='property'>dates</span>, <span class='property'>period</span>) {",
+            "      <span class='keyword'>if</span> (!<span class='function'>typeof</span>(<span class='property'>dates</span>) <span class='keyword'>instanceof</span> <span class='function'>Array</span>) <span class='keyword'>throw</span> <span class='keyword'>new</span> <span class='function'>Error</span>(<span class='string'>\"Type error | Dates should be an array holding two dates!\"</span>);",
+            "      <span class='keyword'>if</span> (!<span class='function'>typeof</span>(<span class='property'>period</span>) <span class='keyword'>instanceof</span> <span class='function'>String</span>) <span class='keyword'>throw</span> <span class='keyword'>new</span> <span class='function'>Error</span>(<span class='string'>\"Type error | Period should be a string containing months or years!\"</span>);",
+            " ",
+            "      <span class='keyword'>return</span> <span class='property'>dates</span>",
+            "        .<span class='function'>map</span>(<span class='property'>date</span> => <span class='property'>date</span>[<span class='property'>period</span> === <span class='string'>'years'</span> ? <span class='string'>'getFullYear'</span> : <span class='string'>'getMonth'</span>]())",
+            "        .<span class='function'>reduce</span>((<span class='property'>a</span>, <span class='property'>b</span>) => <span class='property'>a</span> - <span class='property'>b</span>);",
+            "    };",
+            "",
+            "    <span class='keyword'>get</span> <span class='property'>age</span>() {",
+            "      <span class='keyword'>const</span> <span class='property'>dateCollection</span> = [<span class='keyword'>new</span> <span class='function'>Date</span>(), <span class='keyword'>this</span>.<span class='property'>birthday</span>];",
+            "",
+            "      <span class='keyword'>let</span> <span class='property'>hadCakeThisYear</span>;",
+            "",
+            "      <span class='keyword'>if</span> (<span class='property'>dateCollection</span>.<span class='function'>every</span>(<span class='property'>date</span> => <span class='property'>date</span> === <span class='keyword'>this</span>.<span class='property'>birthday</span>)) {",
+            "        <span class='function'>console.log</span>(<span class='string'>\"Happy birthday to me!\"</span>);",
+            "        <span class='property'>hadCakeThisYear</span> = <span class='keyword'>true</span>;",
+            "      }",
+            "      <span class='keyword'>else</span> {",
+            "        <span class='property'>hadCakeThisYear</span> = <span class='keyword'>this</span>.<span class='function'>processDates</span>(<span class='property'>dateCollection</span>, <span class='string'>'months'</span>);",
+            "      }",
+            "",
+            "      <span class='keyword'>return</span> <span class='keyword'>this</span>.<span class='function'>processDates</span>(<span class='property'>dateCollection</span>, <span class='string'>'years'</span>) - (<span class='property'>hadCakeThisYear</span> ? <span class='number'>1</span> : <span class='number'>0</span>);",
+            "    }",
+            "};",
+            "",
+            "<span class='keyword'>const</span> <span class='property'>expressYourself</span> = <span class='keyword'>new</span> <span class='function'>Person</span>(<span class='string'>'Aron Kramer'</span>, <span class='string'>'1992-10-07'</span>, <span class='property'>aboutMe</span>.<span class='function'>replace</span>(/\\n/g, <span class='string'>''</span>).<span class='function'>trim</span>(),",
+            "{",
+            "  <span class='property'>education</span>: [",
+            "    {<span class='property'>name</span>: <span class='string'>'Harvard University'</span>, <span class='property'>years</span>: <span class='string'>'2022 - 2023'</span>, <span class='property'>accolades</span>: [<span class='string'>'Professional Program Record in Web Development & Computer Science'</span>, <span class='string'>'Web development with Python and JavaScript'</span>, <span class='string'>'Introduction to Computer Science'</span>]},",
+            "    {<span class='property'>name</span>: <span class='string'>'Archipel'</span>, <span class='property'>years</span>: <span class='string'>'2023'</span>, <span class='property'>accolades</span>: <span class='string'>'Design patterns in software engineering'</span>},",
+            "  ],",
+            "  <span class='property'>experience</span>: [",
+            "    {<span class='property'>name</span>:<span class='string'>'Decemberborn Interactive'</span>, <span class='property'>years</span>: <span class='string'>'2015-2020'</span>, <span class='property'>role</span>: <span class='string'>'CCO / Co-owner'</span>},",
+            "    {<span class='property'>name</span>: <span class='string'>'VGZ'</span>, <span class='property'>years</span>: <span class='string'>'2020-2022'</span>, <span class='property'>role</span>: <span class='string'>'Workforce Management Analytics'</span>},",
+            "    {<span class='property'>name</span>: <span class='string'>'Modulari'</span>, <span class='property'>years</span>: <span class='string'>'2024-present'</span>, <span class='property'>role</span>: <span class='string'>'Front-end developer'</span>}",
+            "  ],",
+            "  <span class='property'>skills</span>: [<span class='string'>'JavaScript'</span>, <span class='string'>'React'</span>, <span class='string'>'Redux'</span>, <span class='string'>'jQuery'</span>, <span class='string'>'Lua'</span>, <span class='string'>'Python'</span>, <span class='string'>'C'</span>, <span class='string'>'HTML / CSS / SASS'</span>, <span class='string'>'Git'</span>, <span class='string'>'Webpack'</span>, <span class='string'>'Magento'</span>, <span class='string'>'Core Web Vitals & SEO'</span>, <span class='string'>'A.I. assisted coding'</span>, <span class='string'>'UI/UX'</span>, <span class='string'>'Responsive design'</span>, <span class='string'>'Game development in Godot'</span>, <span class='string'>'Graphic design'</span>],",
+            "  <span class='property'>hobbies</span>: [<span class='string'>'Cats'</span>, <span class='string'>'music composition'</span>, <span class='string'>'graphic design'</span>, <span class='string'>'game development'</span>, <span class='string'>'HACKING! :)'</span>]",
+            "});"
+        ];
+
+        const codeContainer = document.getElementById('code-container');
+
+        document.querySelector('#crt-toggle').addEventListener('click', function() {
+            const crtClassActive = document.querySelector('body').className.includes('crt');
+            document.querySelector('body').classList = crtClassActive ? '' : 'crt';
+        });
+
+        setInterval(() => {
+            document.querySelectorAll('.ascii-logo').forEach((element, index) => {
+                element.style.color = getRandomRgbColor();
+            });
+            
+        }, 500);
+
+        function getRandomRgbColor() {
+            let r = Math.floor(Math.random() * 256);
+            let g = Math.floor(Math.random() * 256);
+            let b = Math.floor(Math.random() * 256);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function typeLine(line, index) {
+            const lineElement = document.createElement('div');
+            lineElement.className = 'typewriter';
+            codeContainer.appendChild(lineElement);
+
+            lineElement.innerHTML = line;
+            lineElement.style.animation = `typing 1s steps(${line.length}, end), blink-caret 0.75s step-end infinite`;
+
+            lineElement.addEventListener('animationend', () => {
+                lineElement.style.borderRight = 'none';
+                if (index < codeLines.length - 1) {
+                    typeLine(codeLines[index + 1], index + 1);
+                }
+            });
+        }
+
+        // Start with the first line
+        typeLine(codeLines[0], 0);
+    </script>
+</body>
+</html>
