@@ -72,7 +72,7 @@
         }
 
         .typewriter {
-            white-space: pre; 
+            white-space: pre-wrap; 
             overflow: hidden; /* Hide the overflowing text */
             border-right: 2px solid #d4d4d4; /* Cursor effect */
             font-size: 1.2em;
@@ -126,10 +126,6 @@
         }
 
         @media (max-width: 600px) {
-            .typewriter {
-                text-wrap: pretty;
-            }
-
             .about-text {
                 white-space: wrap;
                 white-space-collapse: collapse;
